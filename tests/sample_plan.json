@@ -1,0 +1,18 @@
+{
+ "headline": "Product Designer — B2B SaaS, automation & AI interfaces",
+ "summary": "Product designer with 8+ years in product and UX/UI design. Designed a workflow builder, AI agent interfaces and a 150+ component design system for a SaaS product used by ~10,000 users. Based in Berlin; English C1, German B2.",
+ "experience": {"apination": ["apn-workflow", "apn-ds", "apn-ai", "apn-onboarding", "apn-research", "made-up-id"]},
+ "projects": ["shain", "pms", "konto"],
+ "skills": ["Design systems", "UX research", "Figma", "Claude Code", "Kubernetes"],
+ "letter": {
+  "greeting": "Hi Flowbase team,",
+  "paragraphs": [
+   "Your automation builder is the kind of product I like designing most: dense, logical, and used every day by people who want to get work done.",
+   "At API Nation I designed a Workflow Builder that replaced manual automation setup — customers set things up faster and support requests went down. I also built a 150+ component design system that the whole team used as the source of truth.",
+   "Since AI features are on your roadmap: I have designed interfaces for AI agents, and I use AI in my own design workflow every day, including an open-source Claude Code kit for designers.",
+   "I'm based in Berlin and would be glad to walk you through these case studies."
+  ],
+  "closing": "Best regards,"
+ },
+ "gaps": []
+}

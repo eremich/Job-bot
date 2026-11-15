@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<title>{{ person.name }} — CV</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+{% set L = {
+  "en": {"summary": "Profile", "exp": "Experience", "proj": "Selected work", "skills": "Skills & tools", "lang": "Languages", "edu": "Education"},
+  "de": {"summary": "Profil", "exp": "Berufserfahrung", "proj": "Ausgewählte Projekte", "skills": "Skills & Tools", "lang": "Sprachen", "edu": "Ausbildung"}
+}[lang] %}
+
+<header class="head">
+  <h1 class="name">{{ person.name }}</h1>
+  <div class="headline">{{ headline }}</div>
+  <div class="contacts">
+    {% if person.location %}<span>{{ person.location }}</span>{% endif %}
+    {% if person.email %}<span><a href="mailto:{{ person.email }}">{{ person.email }}</a></span>{% endif %}
+    {% if person.phone %}<span>{{ person.phone }}</span>{% endif %}
+    {% for l in person.links %}<span><a href="{{ l.url }}">{{ l.url | replace("https://", "") | replace("www.", "") }}</a></span>{% endfor %}
+  </div>
+</header>
+
+{% if summary %}
+<section class="sec">
+  <h2>{{ L.summary }}</h2>
+  <div class="body summary">{{ summary }}</div>
+</section>
+{% endif %}
+
+<section class="sec">
+  <h2>{{ L.exp }}</h2>
+  <div class="body">
+    {% for e in experience %}
+    <div class="job">
+      <div class="job-top">
+        <div><span class="job-role">{{ e.role }}</span> <span class="job-co">· {{ e.company }}{% if e.location %}, {{ e.location }}{% endif %}</span></div>
+        {% if e.dates %}<div class="job-dates">{{ e.dates }}</div>{% endif %}
+      </div>
+      {% if e.bullets %}<ul>{% for b in e.bullets %}<li>{{ b }}</li>{% endfor %}</ul>{% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% if projects %}
+<section class="sec">
+  <h2>{{ L.proj }}</h2>
+  <div class="body">
+    {% for p in projects %}<div class="proj"><b>{{ p.name }}</b> <span class="muted">— {{ p[lang] or p.en }}</span></div>{% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="sec">
+  <h2>{{ L.skills }}</h2>
+  <div class="body chips">{% for s in skills %}<span class="chip">{{ s }}</span>{% endfor %}</div>
+</section>
+
+<section class="sec">
+  <h2>{{ L.lang }}</h2>
+  <div class="body">{% for l in languages %}{{ l.name }} <span class="muted">({{ l.level }})</span>{% if not loop.last %} · {% endif %}{% endfor %}</div>
+</section>
+
+{% if education %}
+<section class="sec">
+  <h2>{{ L.edu }}</h2>
+  <div class="body">
+    {% for ed in education %}
+    <div><b>{{ ed.degree }}</b>{% if ed.school %} · {{ ed.school }}{% endif %}{% if ed.note %}<div class="muted">{{ ed.note }}</div>{% endif %}</div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+</body>
+</html>

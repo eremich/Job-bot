@@ -1,0 +1,38 @@
+name: Make CV
+
+on:
+  repository_dispatch:
+    types: [make_cv]      # sent by the Telegram button via the Vercel webhook
+  workflow_dispatch:
+    inputs:
+      job_id:
+        description: "Job id from data/jobs.json"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  make_cv:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: System libs for PDF + Inter font
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libpango-1.0-0 libpangoft2-1.0-0 fonts-inter fonts-dejavu-core
+      - run: pip install -r requirements.txt
+      - name: Generate and send
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          JOB_ID: ${{ github.event.client_payload.job_id || inputs.job_id }}
+        run: |
+          # job ids are 12 hex chars — reject anything else
+          [[ "$JOB_ID" =~ ^[0-9a-f]{12}$ ]] || { echo "bad job id"; exit 1; }
+          python -m bot.make_cv "$JOB_ID"

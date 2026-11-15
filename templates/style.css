@@ -1,0 +1,58 @@
+/* Edit freely — this is the look of your CV and letter. */
+@page {
+  size: A4;
+  margin: 16mm 17mm 15mm 17mm;
+}
+:root {
+  --ink: #16181d;
+  --muted: #5d6470;
+  --line: #e3e6eb;
+  --accent: #3a5bd9;
+}
+* { box-sizing: border-box; }
+html { font-family: "Inter", "DejaVu Sans", sans-serif; font-size: 9.6pt; color: var(--ink); line-height: 1.45; }
+body { margin: 0; }
+a { color: inherit; text-decoration: none; }
+
+/* Header */
+.head { padding-bottom: 5mm; border-bottom: 1px solid var(--line); margin-bottom: 5mm; }
+.name { font-size: 24pt; font-weight: 650; letter-spacing: -0.02em; line-height: 1.05; margin: 0; }
+.headline { font-size: 11.5pt; color: var(--accent); font-weight: 550; margin-top: 1.5mm; }
+.contacts { margin-top: 2.5mm; color: var(--muted); font-size: 8.8pt; }
+.contacts span + span::before { content: "·"; margin: 0 2mm; color: #b6bcc6; }
+
+/* Sections: label column + content column */
+.sec { display: flex; gap: 6mm; margin-bottom: 4.5mm; page-break-inside: avoid; }
+.sec > h2 {
+  flex: 0 0 30mm; margin: 0; padding-top: 0.6mm;
+  font-size: 7.6pt; font-weight: 650; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted);
+}
+.sec > .body { flex: 1; min-width: 0; }
+
+.summary { font-size: 10pt; }
+
+.job { margin-bottom: 3.6mm; page-break-inside: avoid; }
+.job:last-child { margin-bottom: 0; }
+.job-top { display: flex; justify-content: space-between; align-items: baseline; gap: 4mm; }
+.job-role { font-weight: 600; font-size: 10.2pt; }
+.job-co { color: var(--muted); }
+.job-dates { color: var(--muted); font-size: 8.6pt; white-space: nowrap; font-variant-numeric: tabular-nums; }
+ul { margin: 1.2mm 0 0 0; padding-left: 4mm; }
+li { margin-bottom: 0.9mm; }
+li::marker { color: var(--accent); }
+
+.proj { margin-bottom: 1.6mm; }
+.proj b { font-weight: 620; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 1.4mm; }
+.chip { border: 1px solid var(--line); border-radius: 99px; padding: 0.4mm 2.4mm; font-size: 8.6pt; }
+
+.muted { color: var(--muted); }
+
+/* Letter */
+.letter .head { margin-bottom: 9mm; }
+.letter .meta { color: var(--muted); margin-bottom: 7mm; }
+.letter .meta b { color: var(--ink); font-weight: 600; }
+.letter p { font-size: 10.4pt; line-height: 1.6; margin: 0 0 3.6mm 0; max-width: 165mm; }
+.letter .sign { margin-top: 7mm; }
+.letter .sign .n { font-weight: 620; margin-top: 1mm; }

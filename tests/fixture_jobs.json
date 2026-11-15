@@ -1,0 +1,9 @@
+[
+ {"id": "a1b2c3d4e5f6", "source": "Arbeitnow", "title": "Senior Product Designer (m/w/d)", "company": "Flowbase GmbH", "url": "https://example.com/flowbase", "location": "Berlin (hybrid)", "description": "Flowbase builds workflow automation for B2B teams. You will own end-to-end design of our automation builder, evolve our design system and run user research. 5+ years experience, English required, German is a plus. AI features on the roadmap."},
+ {"id": "b2c3d4e5f6a1", "source": "Berlin Startup Jobs", "title": "UX/UI Designer", "company": "Kassenwerk", "url": "https://example.com/kassenwerk", "location": "Berlin", "description": "Fintech payments app. Fließendes Deutsch (C2) zwingend erforderlich."},
+ {"id": "c3d4e5f6a1b2", "source": "Remotive", "title": "Product Designer", "company": "Northwind", "url": "https://example.com/northwind", "location": "Remote: USA only", "description": "US timezones only."},
+ {"id": "d4e5f6a1b2c3", "source": "Jobicy", "title": "Junior UI Designer", "company": "Pixelhaus", "url": "https://example.com/pixel", "location": "Remote: Europe", "description": "Junior role."},
+ {"id": "e5f6a1b2c3d4", "source": "Arbeitsagentur", "title": "Grafikdesigner Print", "company": "Druckerei Meyer", "url": "https://example.com/meyer", "location": "Potsdam", "description": "Print."},
+ {"id": "f6a1b2c3d4e5", "source": "Himalayas", "title": "Senior Product Designer", "company": "Flowbase", "url": "https://example.com/flowbase-dup", "location": "Remote: Europe", "description": "Duplicate of the Flowbase job on another board."},
+ {"id": "0a1b2c3d4e5f", "source": "Djinni", "title": "Product Designer, AI Agents", "company": "Lumen AI", "url": "https://example.com/lumen", "location": "Remote: EU", "description": "Design interfaces for AI agents in a B2B SaaS. Strong systems thinking, research skills."}
+]

@@ -1,0 +1,43 @@
+name: Collect jobs
+
+on:
+  schedule:
+    # UTC. 06:17 and 15:17 UTC = 07:17 / 16:17 Berlin in winter (08:17 / 17:17 in summer)
+    - cron: "17 6,15 * * *"
+  workflow_dispatch: {}   # "Run workflow" button + /run command in Telegram
+
+permissions:
+  contents: write
+
+concurrency:
+  group: collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Collect, score, send
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
+          EMAIL_LABEL: ${{ vars.EMAIL_LABEL || 'Jobs' }}
+        run: python -m bot.collect
+      - name: Remember seen jobs
+        run: |
+          git config user.name "job-bot"
+          git config user.email "job-bot@users.noreply.github.com"
+          git add data/jobs.json
+          git diff --cached --quiet || git commit -m "jobs: $(date -u +%F_%H%M)"
+          git pull --rebase --autostash && git push

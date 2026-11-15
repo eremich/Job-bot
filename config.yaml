@@ -1,0 +1,71 @@
+# ─── Что ищем ───────────────────────────────────────────────
+search:
+  # Ключевые слова для источников с поиском (Arbeitsagentur и т.п.)
+  queries: ["Product Designer", "UX Designer", "UI/UX Designer", "UX/UI Designer"]
+  city: Berlin
+  radius_km: 50
+
+  # Заголовок вакансии должен совпасть хотя бы с одним паттерном (regex, без учёта регистра)
+  title_must_match:
+    - 'product\s*design'
+    - '\bux\b'
+    - '\bui\b'
+    - 'user experience'
+    - 'interaction design'
+    - 'service design'
+    - 'design system'
+    - 'produktdesign'
+    - '(ux|ui|product)[\s/-]*(designer|designerin|gestalter)'
+  # Отбрасываем сразу, без траты токенов
+  title_exclude:
+    - 'intern\b'
+    - 'internship'
+    - 'praktik'
+    - 'werkstudent'
+    - 'working student'
+    - 'junior'
+    - 'graphic designer'
+    - 'grafikdesign'
+    - 'mediengestalter'
+    - 'fashion'
+    - 'interior'
+    - 'engineer'
+    - 'developer'
+  # Локация должна содержать что-то из списка (пустая локация пропускается дальше)
+  location_ok: [berlin, germany, deutschland, remote, europe, emea, eu, cet, anywhere, worldwide, homeoffice, home office, hybrid]
+
+# ─── ИИ ─────────────────────────────────────────────────────
+llm:
+  # gemini    — бесплатно (ключ в aistudio.google.com, без карты)
+  # anthropic — Claude API, платно
+  # none      — без ИИ: оценка по ключевым словам, письмо по шаблону
+  provider: gemini
+
+# ─── Оценка ─────────────────────────────────────────────────
+scoring:
+  model: gemini-3.5-flash-lite     # для anthropic: claude-haiku-5-5
+  batch_size: 15
+  min_score: 65                    # ниже — не присылать
+  max_per_run: 8                   # не больше N вакансий за раз
+
+# ─── Генерация CV и письма ──────────────────────────────────
+cv:
+  model: gemini-3.8-flash          # для anthropic: claude-sonnet-5-5
+  cv_language: en                  # en | de — язык CV
+  letter_language: auto            # auto = язык вакансии
+
+# ─── Источники (можно выключать) ─────────────────────────────
+sources:
+  email_alerts: true             # алерты LinkedIn/Xing/StepStone/Indeed из Gmail
+  arbeitsagentur: true
+  arbeitnow: true
+  berlinstartupjobs: true
+  remotive: true
+  jobicy: true
+  himalayas: true
+  remoteok: true
+  weworkremotely: true
+  djinni: true
+
+storage:
+  keep_days: 21                    # сколько дней помнить вакансии

@@ -1,0 +1,121 @@
+# ════════════════════════════════════════════════════════════
+#  БАНК ФАКТОВ — единственный источник правды для CV и писем.
+#  Модель НЕ может писать пункты опыта сама: она только выбирает
+#  id фактов, а текст пунктов берётся отсюда дословно.
+#  Всё, что помечено TODO, заполни сам. Пустые TODO в CV не попадут.
+# ════════════════════════════════════════════════════════════
+
+person:
+  name: Ihor Yeromich
+  headline: Product Designer (UX/UI)
+  location: Berlin, Germany
+  email: ""                        # TODO
+  phone: ""                        # TODO (необязательно)
+  links:
+    - { label: Portfolio, url: "https://yeromich.de" }
+    - { label: LinkedIn,  url: "" }                       # TODO
+    - { label: GitHub,    url: "https://github.com/Dishain" }
+
+# Для ОЦЕНКИ вакансий — что тебе подходит, а что нет
+target:
+  years_experience: 8
+  roles: [Product Designer, UX Designer, UX/UI Designer, Senior Product Designer]
+  seniority: [Mid, Senior]         # TODO поправь, если Lead тоже интересен
+  locations: [Berlin (office/hybrid), Remote within EU/Germany]
+  languages: { English: C1, German: B2, Ukrainian: native, Russian: native }
+  strong_domains: [SaaS, B2B tools, automation / workflow builders, AI interfaces, fintech, healthcare, design systems]
+  deal_breakers:
+    - German C1/native required as a hard requirement
+    - Pure graphic / print / marketing design
+    - Internship, working student, junior
+  nice_to_have:
+    - AI products or AI-assisted design workflows
+    - Product with real users and research culture
+
+# Короткие факты, из которых модель может собрать summary (только они!)
+summary_facts:
+  - 8+ years in product and UX/UI design
+  - Designed for SaaS products used by ~10,000 users
+  - Builds design systems and AI-assisted design workflows (Figma MCP + Claude Code)
+  - Based in Berlin; English C1, German B2
+
+experience:
+  - id: apination
+    company: API Nation
+    location: USA (remote)
+    role: Product Designer         # TODO проверь должность
+    start: ""                      # TODO например "2021"
+    end: ""                        # TODO например "2024" или "Present"
+    facts:
+      - id: apn-workflow
+        tags: [saas, automation, complex-ui, b2b]
+        en: Designed the Workflow Builder that replaced manual automation setup, reducing support requests and speeding up setup for customers
+        de: Workflow Builder gestaltet, der die manuelle Einrichtung von Automationen ersetzte – weniger Support-Anfragen, schnellere Einrichtung
+      - id: apn-ai
+        tags: [ai, agents, b2b]
+        en: Designed interfaces for AI agents, which received positive client feedback
+        de: Interfaces für KI-Agenten gestaltet, mit positivem Kundenfeedback
+      - id: apn-onboarding
+        tags: [onboarding, growth, conversion]
+        en: Redesigned onboarding that had ~35% drop-off, significantly increasing completions
+        de: Onboarding mit ~35 % Abbruchrate neu gestaltet – deutlich mehr Abschlüsse
+      - id: apn-ds
+        tags: [design-system, components]
+        en: Built a 150+ component design system used as the single source of truth across the product
+        de: Designsystem mit über 150 Komponenten aufgebaut, das als Single Source of Truth diente
+      - id: apn-research
+        tags: [research]
+        en: Ran user research with ~30 users to guide product decisions
+        de: Nutzerforschung mit ~30 Nutzer:innen durchgeführt, um Produktentscheidungen zu stützen
+      - id: apn-team
+        tags: [collaboration]
+        en: Worked in a cross-functional team of ~15 (developers, designers, marketing, founders) on a product with ~10,000 users
+        de: In einem cross-funktionalen Team von ~15 Personen an einem Produkt mit ~10.000 Nutzer:innen gearbeitet
+
+  - id: adevelopment
+    company: A-Development
+    location: London, UK
+    role: UX/UI Designer           # TODO
+    start: ""                      # TODO
+    end: ""                        # TODO
+    facts: []                      # TODO добавь 3–5 реальных достижений
+
+projects:
+  - id: pms
+    name: PMS / 3fivetwo Healthcare
+    tags: [healthcare, b2b, complex-ui]
+    en: Patient Management System for 3fivetwo Healthcare (via Anuitex)
+  - id: konto
+    name: Konto
+    tags: [fintech, mobile]
+    en: Fintech app concept and case study
+  - id: hadron
+    name: Hadron Solar
+    tags: [ios, energy, mobile]
+    en: iOS 26 redesign of a solar energy app
+  - id: eticket
+    name: Eticket
+    tags: [ticketing, mobile]
+    en: Ticketing product case study
+  - id: shain
+    name: Shain Designer Kit
+    tags: [ai, open-source, tooling]
+    en: Open-source Claude Code kit that turns Claude Code into a design team (agents for research, UI building, review, accessibility)
+  - id: pokecollect
+    name: PokeCollect
+    tags: [android, mobile, consumer]
+    en: Android app for collectors
+
+skills: [Product design, UX research, Interaction design, Design systems, Prototyping, Usability testing, Information architecture, AI-assisted design workflows]
+tools: [Figma, FigJam, Miro, Claude Code, Figma MCP, Notion]
+
+education:
+  - degree: Master of Law
+    school: ""                     # TODO название университета
+    note: Recognized by ZAB (equivalent to German Hochschulabschluss)
+
+languages:
+  - { name: English, level: C1 }
+  - { name: German, level: B2 }
+  - { name: Ukrainian, level: Native }
+  - { name: Russian, level: Native }
