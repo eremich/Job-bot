@@ -6,7 +6,7 @@ from pathlib import Path
 
 import requests
 
-from .common import Job, env
+from .common import DATA, Job, env
 
 API = "https://api.telegram.org/bot{token}/{method}"
 
@@ -31,7 +31,8 @@ def chat_id() -> str:
     global _CHAT
     if _CHAT:
         return _CHAT
-    _CHAT = env("TELEGRAM_CHAT_ID", required=False)
+    saved = DATA / "chat_id.txt"
+    _CHAT = env("TELEGRAM_CHAT_ID", required=False) or (saved.read_text().strip() if saved.exists() else "")
     if not _CHAT:
         updates = _call("getUpdates", allowed_updates=[])
         for upd in reversed(updates):
@@ -45,7 +46,9 @@ def chat_id() -> str:
                 _CHAT = str(src["chat"]["id"])
                 break
         if _CHAT:
-            print(f"[telegram] chat id detected: {_CHAT} — add it as TELEGRAM_CHAT_ID secret to make it permanent")
+            saved.parent.mkdir(exist_ok=True)
+            saved.write_text(_CHAT)  # committed by the workflow, so it survives Telegram's 24h update window
+            print(f"[telegram] chat id detected and saved: {_CHAT}")
     if not _CHAT:
         me = _call("getMe")
         raise SystemExit(
