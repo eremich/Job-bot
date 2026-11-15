@@ -23,8 +23,24 @@ def _call(method: str, files=None, **data):
     return body["result"]
 
 
+_CHAT = None
+
+
 def chat_id() -> str:
-    return env("TELEGRAM_CHAT_ID")
+    """TELEGRAM_CHAT_ID if set, otherwise the chat of whoever last wrote to the bot."""
+    global _CHAT
+    if _CHAT:
+        return _CHAT
+    _CHAT = env("TELEGRAM_CHAT_ID", required=False)
+    if not _CHAT:
+        for upd in reversed(_call("getUpdates")):
+            msg = upd.get("message") or (upd.get("callback_query") or {}).get("message")
+            if msg:
+                _CHAT = str(msg["chat"]["id"])
+                break
+    if not _CHAT:
+        raise SystemExit("Напиши боту в Telegram любое сообщение и запусти ещё раз")
+    return _CHAT
 
 
 def send_text(text: str, chat: str | None = None, **extra):
