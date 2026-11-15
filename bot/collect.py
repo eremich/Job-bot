@@ -76,8 +76,9 @@ def main(argv=None):
         for j in good:
             print(tg.job_card(j), "\n   ", j.url, "\n")
     else:
-        if good or broken:
-            tg.send_text(header)
+        if not good:
+            header += "\n\nПодходящих новых вакансий нет — проверю в следующий раз."
+        tg.send_text(header)  # always report, so silence never means "broken"
         for j in good:
             tg.send_job(j)
             j.sent = True
