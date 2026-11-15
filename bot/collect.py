@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -62,8 +63,12 @@ def main(argv=None):
         store.add(j)
 
     # ── Telegram ──
+    berlin = datetime.now(ZoneInfo("Europe/Berlin"))
+    # Hourly scheduled runs are quiet: only new matching jobs, broken sources once a day (07:xx run).
+    # Night hours are excluded by the cron schedule itself.
+    scheduled = os.environ.get("GITHUB_EVENT_NAME") == "schedule"
     ok = sum(1 for v in status.values() if v.startswith("ok"))
-    when = datetime.now(ZoneInfo("Europe/Berlin")).strftime("%d.%m %H:%M")
+    when = berlin.strftime("%d.%m %H:%M")
     header = (
         f"🔎 <b>Подборка {when}</b>\n"
         f"Новых: {len(fresh)} · подходят: {len(good)} · источники: {ok}/{len(status)}"
@@ -77,9 +82,12 @@ def main(argv=None):
         for j in good:
             print(tg.job_card(j), "\n   ", j.url, "\n")
     else:
-        if not good:
-            header += "\n\nПодходящих новых вакансий нет — проверю в следующий раз."
-        tg.send_text(header)  # always report, so silence never means "broken"
+        if not scheduled:
+            if not good:
+                header += "\n\nПодходящих новых вакансий нет — проверю в следующий раз."
+            tg.send_text(header)  # manual run: always report
+        elif broken and berlin.hour == 7:
+            tg.send_text("🛠 Утренняя проверка источников\n" + "\n".join(broken))
         for j in good:
             tg.send_job(j)
             j.sent = True

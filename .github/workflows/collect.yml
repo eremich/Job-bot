@@ -2,8 +2,8 @@ name: Collect jobs
 
 on:
   schedule:
-    # UTC. 06:17 and 15:17 UTC = 07:17 / 16:17 Berlin in winter (08:17 / 17:17 in summer)
-    - cron: "17 6,15 * * *"
+    # Every hour 07:xx–22:xx Berlin (cron is UTC; Berlin = UTC+1 in winter, +2 in summer)
+    - cron: "11 5-21 * * *"
   workflow_dispatch: {}   # "Run workflow" button + /run command in Telegram
   push:                   # any code/config change → run right away
     branches: [main]
