@@ -1,7 +1,8 @@
 # ─── Что ищем ───────────────────────────────────────────────
 search:
   # Ключевые слова для источников с поиском (Arbeitsagentur и т.п.)
-  queries: ["Product Designer", "UX Designer", "UI/UX Designer", "UX/UI Designer"]
+  queries: ["Product Designer", "UX Designer", "UI/UX Designer", "UX/UI Designer", "Interaction Designer", "Service Designer", "UI Designer"]
+  queries_de: ["Produktdesigner", "UX Designerin", "Digital Product Designer"]  # только для Arbeitsagentur
   city: Berlin
   radius_km: 50
 

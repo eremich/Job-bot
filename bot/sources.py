@@ -23,6 +23,14 @@ def _desc(text: str | None) -> str:
 
 
 # ── Bundesagentur für Arbeit (official, free) ─────────────────
+def _first(d: dict, *keys):
+    for k in keys:
+        v = d.get(k)
+        if v:
+            return v
+    return None
+
+
 def arbeitsagentur(cfg: dict) -> list[Job]:
     s = http()
     s.headers["X-API-Key"] = "jobboerse-jobsuche"  # public client id from the official docs
@@ -31,13 +39,13 @@ def arbeitsagentur(cfg: dict) -> list[Job]:
     paths = ["/pc/v6/jobs", "/pc/v4/jobs", "/pc/v4/app/jobs"]
     jobs: dict[str, Job] = {}
     last_err = None
-    for q in cfg["search"]["queries"]:
+    for q in cfg["search"]["queries"] + cfg["search"].get("queries_de", []):
         params = {
             "was": q,
             "wo": cfg["search"]["city"],
             "umkreis": cfg["search"]["radius_km"],
             "angebotsart": 1,          # Arbeit (not Ausbildung)
-            "veroeffentlichtseit": 3,  # last 3 days
+            "veroeffentlichtseit": 7,  # last 7 days (we dedupe anyway)
             "size": 50,
             "page": 1,
         }
@@ -51,24 +59,35 @@ def arbeitsagentur(cfg: dict) -> list[Job]:
             last_err = f"{path}: HTTP {r.status_code}"
         if data is None:
             continue
-        items = data.get("stellenangebote") or (data.get("_embedded") or {}).get("jobs") or []
-        if not items:
-            print(f"::notice title=arbeitsagentur-shape::{paths[0]} q={q} keys={list(data)[:12]} "
-                  f"max={data.get('maxErgebnisse')} sample={json.dumps(data)[:600]}")
+        items = (
+            data.get("stellenangebote")
+            or data.get("ergebnisliste")
+            or (data.get("_embedded") or {}).get("jobs")
+            or []
+        )
+        if items and not jobs:
+            print(f"::notice title=arbeitsagentur-item::{json.dumps(items[0])[:900]}")
         for it in items:
-            ref = it.get("refnr") or it.get("referenznummer")
+            ref = _first(it, "refnr", "referenznummer", "refNr", "stellenangebotsId", "hashId")
             if not ref:
                 continue
-            ort = (it.get("arbeitsort") or {}).get("ort", "")
+            lok = (it.get("stellenlokationen") or [{}])[0].get("adresse", {}) if it.get("stellenlokationen") else {}
+            ort = (it.get("arbeitsort") or {}).get("ort", "") or lok.get("ort", "")
+            company = _first(it, "arbeitgeber", "arbeitgeberName", "firma", "unternehmen", "arbeitgeberAnzeigename")
+            if isinstance(company, dict):
+                company = company.get("name") or company.get("anzeigename") or ""
             jobs[ref] = Job(
                 id=make_id("ba", ref),
                 source="Arbeitsagentur",
-                title=it.get("titel") or it.get("beruf", ""),
-                company=it.get("arbeitgeber", ""),
+                title=_first(it, "titel", "stellenangebotsTitel", "beruf") or "",
+                company=company or "",
                 url=f"https://www.arbeitsagentur.de/jobsuche/jobdetail/{ref}",
                 location=ort,
-                description=it.get("beruf", ""),
-                posted=it.get("aktuelleVeroeffentlichungsdatum", ""),
+                description=" ".join(
+                    str(x) for x in (_first(it, "beruf", "hauptberuf"), it.get("vertragsdauer"),
+                                     "Vollzeit" if it.get("arbeitszeitVollzeit") else "") if x
+                ),
+                posted=_first(it, "aktuelleVeroeffentlichungsdatum", "veroeffentlichungsdatum", "modifikationsTimestamp") or "",
             )
     if not jobs and last_err:
         raise RuntimeError(f"all endpoints failed, last {last_err}")
