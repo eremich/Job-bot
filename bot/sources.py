@@ -24,9 +24,12 @@ def _desc(text: str | None) -> str:
 # ── Bundesagentur für Arbeit (official, free) ─────────────────
 def arbeitsagentur(cfg: dict) -> list[Job]:
     s = http()
-    s.headers["X-API-Key"] = "jobboerse-jobsuche"  # public key from the official docs
-    base = "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4/jobs"
+    s.headers["X-API-Key"] = "jobboerse-jobsuche"  # public client id from the official docs
+    root = "https://rest.arbeitsagentur.de/jobboerse/jobsuche-service"
+    # The agency moves versions from time to time — try the newest first.
+    paths = ["/pc/v6/jobs", "/pc/v4/jobs", "/pc/v4/app/jobs"]
     jobs: dict[str, Job] = {}
+    last_err = None
     for q in cfg["search"]["queries"]:
         params = {
             "was": q,
@@ -35,11 +38,21 @@ def arbeitsagentur(cfg: dict) -> list[Job]:
             "angebotsart": 1,          # Arbeit (not Ausbildung)
             "veroeffentlichtseit": 3,  # last 3 days
             "size": 50,
+            "page": 1,
         }
-        r = s.get(base, params=params, timeout=TIMEOUT)
-        r.raise_for_status()
-        for it in r.json().get("stellenangebote", []) or []:
-            ref = it.get("refnr")
+        data = None
+        for path in list(paths):
+            r = s.get(root + path, params=params, timeout=TIMEOUT)
+            if r.ok:
+                data = r.json()
+                paths[:] = [path] + [p for p in paths if p != path]  # remember the working one
+                break
+            last_err = f"{path}: HTTP {r.status_code}"
+        if data is None:
+            continue
+        items = data.get("stellenangebote") or (data.get("_embedded") or {}).get("jobs") or []
+        for it in items:
+            ref = it.get("refnr") or it.get("referenznummer")
             if not ref:
                 continue
             ort = (it.get("arbeitsort") or {}).get("ort", "")
@@ -53,6 +66,8 @@ def arbeitsagentur(cfg: dict) -> list[Job]:
                 description=it.get("beruf", ""),
                 posted=it.get("aktuelleVeroeffentlichungsdatum", ""),
             )
+    if not jobs and last_err:
+        raise RuntimeError(f"all endpoints failed, last {last_err}")
     return list(jobs.values())
 
 

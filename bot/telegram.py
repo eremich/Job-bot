@@ -33,13 +33,25 @@ def chat_id() -> str:
         return _CHAT
     _CHAT = env("TELEGRAM_CHAT_ID", required=False)
     if not _CHAT:
-        for upd in reversed(_call("getUpdates")):
-            msg = upd.get("message") or (upd.get("callback_query") or {}).get("message")
-            if msg:
-                _CHAT = str(msg["chat"]["id"])
+        updates = _call("getUpdates", allowed_updates=[])
+        for upd in reversed(updates):
+            src = (
+                upd.get("message")
+                or upd.get("edited_message")
+                or upd.get("my_chat_member")
+                or (upd.get("callback_query") or {}).get("message")
+            )
+            if src and src.get("chat", {}).get("type") == "private":
+                _CHAT = str(src["chat"]["id"])
                 break
+        if _CHAT:
+            print(f"[telegram] chat id detected: {_CHAT} — add it as TELEGRAM_CHAT_ID secret to make it permanent")
     if not _CHAT:
-        raise SystemExit("Напиши боту в Telegram любое сообщение и запусти ещё раз")
+        me = _call("getMe")
+        raise SystemExit(
+            f"Бот @{me.get('username')} не видит ни одного сообщения от тебя. "
+            f"Открой t.me/{me.get('username')}, нажми Start, напиши что-нибудь и запусти ещё раз."
+        )
     return _CHAT
 
 
