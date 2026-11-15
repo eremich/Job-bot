@@ -62,6 +62,18 @@ def main(argv=None):
     for j in fresh:
         store.add(j)
 
+    # Backlog: good jobs from the last 3 days that were never sent (e.g. cut by an old limit)
+    from datetime import timedelta, timezone
+
+    cutoff = datetime.now(timezone.utc) - timedelta(days=3)
+    sent_ids = {j.id for j in good}
+    backlog = [
+        j for j in prefilter(list(store.jobs.values()), cfg)
+        if not j.sent and j.id not in sent_ids and (j.score or 0) >= sc["min_score"]
+        and datetime.fromisoformat(j.found_at) >= cutoff
+    ]
+    good = sorted(good + backlog, key=lambda j: j.score or 0, reverse=True)[: sc["max_per_run"]]
+
     # ── Telegram ──
     berlin = datetime.now(ZoneInfo("Europe/Berlin"))
     # Hourly scheduled runs are quiet: only new matching jobs, broken sources once a day (07:xx run).

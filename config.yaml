@@ -46,7 +46,7 @@ scoring:
   model: gemini-3.5-flash-lite     # для anthropic: claude-haiku-5-5
   batch_size: 15
   min_score: 65                    # ниже — не присылать
-  max_per_run: 8                   # не больше N вакансий за раз
+  max_per_run: 30                  # предохранитель от спама, обычно новых меньше
 
 # ─── Генерация CV и письма ──────────────────────────────────
 cv:

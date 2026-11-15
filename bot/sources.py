@@ -6,6 +6,7 @@ and the other sources keep working.
 """
 from __future__ import annotations
 
+import json
 import urllib.parse
 
 import feedparser
@@ -51,6 +52,9 @@ def arbeitsagentur(cfg: dict) -> list[Job]:
         if data is None:
             continue
         items = data.get("stellenangebote") or (data.get("_embedded") or {}).get("jobs") or []
+        if not items:
+            print(f"::notice title=arbeitsagentur-shape::{paths[0]} q={q} keys={list(data)[:12]} "
+                  f"max={data.get('maxErgebnisse')} sample={json.dumps(data)[:600]}")
         for it in items:
             ref = it.get("refnr") or it.get("referenznummer")
             if not ref:
