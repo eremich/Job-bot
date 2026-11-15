@@ -5,6 +5,9 @@ on:
     # UTC. 06:17 and 15:17 UTC = 07:17 / 16:17 Berlin in winter (08:17 / 17:17 in summer)
     - cron: "17 6,15 * * *"
   workflow_dispatch: {}   # "Run workflow" button + /run command in Telegram
+  push:                   # any code/config change → run right away
+    branches: [main]
+    paths: ["bot/**", "config.yaml", "profile/**", "requirements.txt", ".github/workflows/collect.yml"]
 
 permissions:
   contents: write
