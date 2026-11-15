@@ -37,6 +37,10 @@ def ask_json(model: str, system: str, user: str, max_tokens: int = 4000):
 
 # ── Gemini (free tier) ────────────────────────────────────────
 def _gemini(model: str, system: str, user: str, max_tokens: int) -> str:
+    import os
+
+    if not os.environ.get("GEMINI_API_KEY"):
+        raise LLMUnavailable("GEMINI_API_KEY not set — working without AI")
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     body = {
         "systemInstruction": {"parts": [{"text": system}]},
