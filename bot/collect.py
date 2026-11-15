@@ -44,6 +44,7 @@ def main(argv=None):
     print(f"raw={len(raw)} prefiltered={len(candidates)} new={len(fresh)}")
     for k, v in status.items():
         print(f"  {k}: {v}")
+    print("::notice title=sources::" + " | ".join(f"{k}: {v[:60]}" for k, v in status.items()))
 
     if fresh and not args.no_llm:
         score_jobs(fresh, facts, cfg)
@@ -87,4 +88,14 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    import traceback
+
+    try:
+        main()
+    except BaseException as exc:  # surface the reason as a GitHub annotation
+        if isinstance(exc, SystemExit) and exc.code in (0, None):
+            raise
+        msg = str(exc) if isinstance(exc, SystemExit) else traceback.format_exc()[-900:]
+        print("::error title=job-bot::" + msg.replace("\n", "%0A"))
+        sys.exit(1)

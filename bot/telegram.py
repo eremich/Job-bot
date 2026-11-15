@@ -51,9 +51,12 @@ def chat_id() -> str:
             print(f"[telegram] chat id detected and saved: {_CHAT}")
     if not _CHAT:
         me = _call("getMe")
+        hook = _call("getWebhookInfo")
+        kinds = [k for u in updates for k in u if k != "update_id"]
         raise SystemExit(
-            f"Бот @{me.get('username')} не видит ни одного сообщения от тебя. "
-            f"Открой t.me/{me.get('username')}, нажми Start, напиши что-нибудь и запусти ещё раз."
+            f"Bot @{me.get('username')} (id {me.get('id')}) sees no private chat. "
+            f"updates={len(updates)} kinds={kinds[:10]} webhook='{hook.get('url', '')}' "
+            f"pending={hook.get('pending_update_count')}"
         )
     return _CHAT
 
