@@ -2,12 +2,14 @@ name: Collect jobs
 
 on:
   schedule:
+    # Backup only: GitHub's own scheduler often skips runs, so an external hourly
+    # alarm also pushes data/tick.txt (see push trigger below).
     # Every hour 07:xx–22:xx Berlin (cron is UTC; Berlin = UTC+1 in winter, +2 in summer)
     - cron: "11 5-21 * * *"
   workflow_dispatch: {}   # "Run workflow" button + /run command in Telegram
   push:                   # any code/config change → run right away
     branches: [main]
-    paths: ["bot/**", "config.yaml", "profile/**", "requirements.txt", ".github/workflows/collect.yml"]
+    paths: ["bot/**", "config.yaml", "profile/**", "requirements.txt", ".github/workflows/collect.yml", "data/tick.txt"]  # tick = external hourly alarm
 
 permissions:
   contents: write
