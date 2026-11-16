@@ -78,7 +78,8 @@ def main(argv=None):
     berlin = datetime.now(ZoneInfo("Europe/Berlin"))
     # Hourly scheduled runs are quiet: only new matching jobs, broken sources once a day (07:xx run).
     # Night hours are excluded by the cron schedule itself.
-    scheduled = os.environ.get("GITHUB_EVENT_NAME") == "schedule"
+    # Only a manual run (button / /run) sends a summary; schedule and code pushes stay quiet.
+    scheduled = os.environ.get("GITHUB_EVENT_NAME", "workflow_dispatch") != "workflow_dispatch"
     ok = sum(1 for v in status.values() if v.startswith("ok"))
     when = berlin.strftime("%d.%m %H:%M")
     header = (

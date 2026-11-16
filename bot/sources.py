@@ -13,6 +13,7 @@ import feedparser
 
 from .common import Job, http, make_id, strip_html
 from .email_alerts import NotConfigured, email_alerts
+from .xing import xing
 
 TIMEOUT = 25
 DESC_LIMIT = 4000
@@ -271,6 +272,7 @@ def _rss(url, source, default_location="", split_company=None, company_first=Fal
 
 
 ALL = {
+    "xing": xing,
     "email_alerts": email_alerts,
     "arbeitsagentur": arbeitsagentur,
     "arbeitnow": arbeitnow,

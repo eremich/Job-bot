@@ -57,6 +57,7 @@ cv:
 
 # ─── Источники (можно выключать) ─────────────────────────────
 sources:
+  xing: true                      # прямой поиск по сайту XING (без официального API)
   email_alerts: true             # алерты LinkedIn/Xing/StepStone/Indeed из Gmail
   arbeitsagentur: true
   arbeitnow: true
