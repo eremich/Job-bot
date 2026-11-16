@@ -32,6 +32,10 @@ search:
     - 'interior'
     - 'engineer'
     - 'developer'
+    - 'technical (systems|product)'
+    - 'technische[rn]? produktdesign'
+    - 'drafter'
+    - 'trainee'
   # Локация должна содержать что-то из списка (пустая локация пропускается дальше)
   location_ok: [berlin, germany, deutschland, remote, europe, emea, eu, cet, anywhere, worldwide, homeoffice, home office, hybrid]
 
