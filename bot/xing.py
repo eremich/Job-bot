@@ -94,7 +94,15 @@ def xing(cfg: dict) -> list[Job]:
             got = _from_html(r.text, city) if r.ok else []
             for j in got:
                 found[j.id] = j
-            if q == cfg["search"]["queries"][0]:
+            if q == cfg["search"]["queries"][0] and "t-" in url:
+                t = r.text
+                pats = ["\\u002Fjobs\\u002F", "\\/jobs\\/", "__NEXT_DATA__", "__APOLLO", "sha256Hash", "graphql",
+                        "xing-one", "JobPosting", "Designer", "\"title\"", "jobId", "\"id\":\"", "window.__", "crate"]
+                counts = {p_: t.count(p_) for p_ in pats}
+                i = t.find("Designer")
+                print("::notice title=xing-shape::" + json.dumps(counts) + " ctx=" + t[max(0, i - 500): i + 400].replace("\n", " "))
+                scripts = re.findall(r"<script[^>]*src=\"([^\"]+)\"", t)[:15]
+                print("::notice title=xing-scripts::" + " ".join(scripts)[:1500])
                 gql = re.findall(r"[\"'](https?://[^\"']*(?:graphql|xing-one)[^\"']*)[\"']", r.text)[:2]
                 diag.append(f"{url.split('xing.com')[1]} {r.status_code} len={len(r.text)} jobs={len(got)} "
                             f"ld={r.text.count('JobPosting')} links={len(JOB_LINK.findall(r.text))} gql={gql}")
