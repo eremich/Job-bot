@@ -6,7 +6,12 @@ on:
     # alarm also pushes data/tick.txt (see push trigger below).
     # Every hour 07:xx–22:xx Berlin (cron is UTC; Berlin = UTC+1 in winter, +2 in summer)
     - cron: "11 5-21 * * *"
-  workflow_dispatch: {}   # "Run workflow" button + /run command in Telegram
+  workflow_dispatch:      # "Run workflow" button, /run in Telegram, external alarm (cron-job.org)
+    inputs:
+      quiet:
+        description: "true = only message when there are new matching jobs (used by the hourly alarm)"
+        required: false
+        default: "false"
   push:                   # any code/config change → run right away
     branches: [main]
     paths: ["bot/**", "config.yaml", "profile/**", "requirements.txt", ".github/workflows/collect.yml", "data/tick.txt"]  # tick = external hourly alarm
@@ -38,6 +43,7 @@ jobs:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
           EMAIL_LABEL: ${{ vars.EMAIL_LABEL || 'Jobs' }}
+          QUIET: ${{ inputs.quiet || 'false' }}
         run: python -m bot.collect
       - name: Remember seen jobs
         run: |
