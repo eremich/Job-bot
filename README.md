@@ -90,3 +90,14 @@ python tests/test_email.py
 - У Arbeitsagentur в выдаче нет полного текста вакансии, поэтому там оценка идёт по заголовку и компании.
 - Форматы сторонних площадок иногда меняются. Сломанный источник будет виден в Telegram.
 - Финальное CV всё равно просматривай перед отправкой: проверка ловит выдумки в письме, но не заменяет твой взгляд.
+
+## Надёжный ежечасный запуск (cron-job.org)
+Встроенное расписание GitHub часто пропускает запуски, поэтому бота раз в час будит внешний бесплатный будильник.
+1. github.com/settings/personal-access-tokens/new → Repository access: **Only select repositories → Job-bot** → Permissions → **Actions: Read and write** → Generate token.
+2. cron-job.org → Create cronjob:
+   - URL: `https://api.github.com/repos/eremich/Job-bot/actions/workflows/collect.yml/dispatches`
+   - Schedule: каждый час, часы 7–22, Timezone Europe/Berlin
+   - Advanced → Request method **POST**
+   - Headers: `Authorization: Bearer <токен>`, `Accept: application/vnd.github+json`, `Content-Type: application/json`
+   - Request body: `{"ref":"main","inputs":{"quiet":"true"}}`
+   - Ответ `204` значит, что всё в порядке.
